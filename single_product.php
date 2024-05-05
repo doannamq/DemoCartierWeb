@@ -19,6 +19,8 @@ if (isset($_GET['product_id'])) {
     header(('location: index.php'));
 }
 
+$size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64];
+
 ?>
 
 <?php include('layouts/header.php'); ?>
@@ -59,6 +61,21 @@ if (isset($_GET['product_id'])) {
             <h2 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h2>
             <?php } ?>
 
+            <?php if ($row['product_category'] == 'ring') { ?>
+            <!-- <p style="margin-top: 20px;">FIND YOUR SIZE</p>
+            <select id="select-size" class="form-select">
+                <?php for ($i = 0; $i < count($size_array); $i++) { ?>
+                <option><?php echo $size_array[$i] ?></option>
+                <?php } ?>
+            </select> -->
+            <p style="margin-top: 20px;">FIND YOUR SIZE</p>
+            <select id="select-size" class="form-select" onchange="updateHiddenInput(this.value)">
+                <?php for ($i = 0; $i < count($size_array); $i++) { ?>
+                <option value="<?php echo $size_array[$i]; ?>"><?php echo $size_array[$i]; ?></option>
+                <?php } ?>
+            </select>
+            <?php } ?>
+
             <form method="POST" action="cart.php" onsubmit="return validateQuantity();">
                 <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>" />
                 <input type="hidden" name="product_image" value="<?php echo $row['product_image'] ?>" />
@@ -66,7 +83,8 @@ if (isset($_GET['product_id'])) {
                 <input type="hidden" name="product_price"
                     value="<?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>" />
                 <input type="number" name="product_quantity" value="1" id="product_quantity" />
-                <button class="buy-btn" type="submit" name="add_to_cart">Thêm vào giỏ</button>
+                <input type="hidden" name="product_size" id="hidden-size" value="" />
+                <button class="buy-btn" id="buy-btn" type="submit" name="add_to_cart">Thêm vào giỏ</button>
             </form>
 
             <h4 class="mt-5 mb-5">Chi tiết sản phẩm</h4>
@@ -86,7 +104,7 @@ if (isset($_GET['product_id'])) {
     </div>
     <div class="row mx-auto container-fluid">
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/featured1.png" />
+            <img class="img-fluid mb-3" src="assets/imgs/bag1.1.avif" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -94,12 +112,12 @@ if (isset($_GET['product_id'])) {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
             </div>
-            <h5 class="p-name">Sports Shoes</h5>
-            <h4 class="p-price">$199.9</h4>
+            <h5 class="p-name">Túi xách</h5>
+            <h4 class="p-price">$200</h4>
             <button class="buy-btn">Mua ngay</button>
         </div>
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/featured2.webp" />
+            <img class="img-fluid mb-3" src="assets/imgs/LOVE RING, 3 DIAMONDS1.jpg" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -107,12 +125,12 @@ if (isset($_GET['product_id'])) {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
             </div>
-            <h5 class="p-name">Coat</h5>
-            <h4 class="p-price">$19.9</h4>
+            <h5 class="p-name">Nhẫn</h5>
+            <h4 class="p-price">$100</h4>
             <button class="buy-btn">Mua ngay</button>
         </div>
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/featured3.avif" />
+            <img class="img-fluid mb-3" src="assets/imgs/perfume1.1.avif" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -120,12 +138,12 @@ if (isset($_GET['product_id'])) {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
             </div>
-            <h5 class="p-name">Bag</h5>
-            <h4 class="p-price">$59.9</h4>
+            <h5 class="p-name">Nước hoa</h5>
+            <h4 class="p-price">$50</h4>
             <button class="buy-btn">Mua ngay</button>
         </div>
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/featured4.png" />
+            <img class="img-fluid mb-3" src="assets/imgs/SANTOS DE CARTIER WATCH1.jpg" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -133,13 +151,12 @@ if (isset($_GET['product_id'])) {
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
             </div>
-            <h5 class="p-name">Air Frier</h5>
-            <h4 class="p-price">$299.9</h4>
+            <h5 class="p-name">Đồng hồ</h5>
+            <h4 class="p-price">$900</h4>
             <button class="buy-btn">Mua ngay</button>
         </div>
     </div>
 </section>
-
 
 <script>
 var mainImg = document.getElementById('mainImg');
@@ -159,6 +176,28 @@ function validateQuantity() {
         return false;
     }
     return true;
+}
+
+const selectSize = document.getElementById('select-size');
+const buyBtn = document.getElementById('buy-btn');
+
+
+buyBtn.addEventListener('mouseover', function() {
+    if (selectSize.value === 'Select size') {
+        buyBtn.textContent = 'Hãy chọn size';
+        buyBtn.disabled = true;
+    }
+});
+
+buyBtn.addEventListener('mouseout', function() {
+    buyBtn.textContent = 'Thêm vào giỏ';
+    buyBtn.disabled = false;
+});
+
+let selectedSize = document.getElementById('select-size').value;
+
+function updateHiddenInput(value) {
+    document.getElementById('hidden-size').value = value;
 }
 </script>
 

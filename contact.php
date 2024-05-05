@@ -1,5 +1,4 @@
 <?php include('layouts/header.php') ?>
-
 <!--Contact-->
 <section id="contact" class="container">
     <div class="contact-info">
@@ -45,7 +44,12 @@
         <button type="submit" name="send">Send Message</button>
 
     </form>
-
 </section>
+<?php
+if (isset($_GET['send_status'])) {
+    $sendStatus = $_GET['send_status'];
+    echo '<div class="send-status">' . $sendStatus . '</div>';
+}
+?>
 
 <?php include('layouts/footer.php') ?>

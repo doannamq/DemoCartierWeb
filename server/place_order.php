@@ -123,6 +123,6 @@ if (!isset($_SESSION['logged_in'])) {
         $mail->send();
 
         //6. inform user whether everything is fine or there is a problem 
-        header('location: ../payment.php?order_status=order placed successfully');
+        header('location: ../payment.php?order_status=Đặt hàng thành công');
     }
 }

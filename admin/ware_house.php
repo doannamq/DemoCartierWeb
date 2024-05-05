@@ -93,9 +93,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet">
@@ -104,139 +107,139 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <style>
-    form {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
+        form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
 
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 20% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 30%;
-    }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+        }
 
-    input[name="product_quantity"] {
-        margin-top: 10px;
-        margin-bottom: 20px;
-        padding: 5px;
-        font-size: 16px;
-        width: 100%;
-    }
+        input[name="product_quantity"] {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
 
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    p {
-        color: black;
-        font-size: 22px;
-        text-align: center;
-    }
+        p {
+            color: black;
+            font-size: 22px;
+            text-align: center;
+        }
 
-    .button {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
+        .button {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
 
-    #confirmDeleteBtn,
-    #cancelDeleteBtn {
-        padding: 15px 50px;
-        border-radius: 5px;
-        border: 1px solid white;
-        font-size: 19px;
-        font-weight: bold;
-        color: white
-    }
+        #confirmDeleteBtn,
+        #cancelDeleteBtn {
+            padding: 15px 50px;
+            border-radius: 5px;
+            border: 1px solid white;
+            font-size: 19px;
+            font-weight: bold;
+            color: white
+        }
 
-    #confirmDeleteBtn {
-        background-color: rgb(105, 219, 103);
-    }
+        #confirmDeleteBtn {
+            background-color: rgb(105, 219, 103);
+        }
 
-    #confirmDeleteBtn:hover {
-        background-color: rgb(119, 229, 117);
-    }
+        #confirmDeleteBtn:hover {
+            background-color: rgb(119, 229, 117);
+        }
 
-    #cancelDeleteBtn {
-        background-color: rgb(229, 90, 84);
-    }
+        #cancelDeleteBtn {
+            background-color: rgb(229, 90, 84);
+        }
 
-    #cancelDeleteBtn:hover {
-        background-color: rgb(240, 105, 100);
-    }
+        #cancelDeleteBtn:hover {
+            background-color: rgb(240, 105, 100);
+        }
 
-    #deleteSuccessMessage {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
+        #deleteSuccessMessage {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-    #deleteSuccessMessage .modal-content {
-        background-color: #fefefe;
-        margin: 20% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 30%;
-    }
+        #deleteSuccessMessage .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+        }
 
-    #deleteSuccessMessage p {
-        color: black;
-        font-size: 22px;
-        text-align: center;
-    }
+        #deleteSuccessMessage p {
+            color: black;
+            font-size: 22px;
+            text-align: center;
+        }
 
-    #deleteSuccessMessage .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
+        #deleteSuccessMessage .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    #deleteSuccessMessage .close:hover,
-    #deleteSuccessMessage .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
+        #deleteSuccessMessage .close:hover,
+        #deleteSuccessMessage .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    form {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
+        form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
     </style>
 
 </head>
@@ -254,7 +257,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">EShop Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Cartier Admin</div>
             </a>
 
             <!-- Divider -->
@@ -262,7 +265,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="../admin/chart.php">
+                <a class="nav-link" href="chart.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -273,24 +276,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="index.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span>Đơn hàng</span></a>
             </li>
             <hr class="sidebar-divider">
 
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="delivery_order.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Đơn vận chuyển</span></a>
-            </li> -->
-
-            <!-- Divider -->
-            <!-- <hr class="sidebar-divider"> -->
-
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="products.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-box"></i>
                     <span>Sản phẩm</span></a>
             </li>
             <!-- Divider -->
@@ -298,7 +292,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <li class="nav-item">
                 <a class="nav-link" href="account.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-user"></i>
                     <span>Tài khoản</span></a>
             </li>
             <!-- Divider -->
@@ -307,17 +301,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <li class="nav-item">
                 <a class="nav-link" href="add_new_product.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-square-plus"></i>
                     <span>Thêm sản phẩm mới</span></a>
             </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 
             <li class="nav-item">
                 <a class="nav-link" href="ware_house.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-warehouse"></i>
                     <span>Kho hàng</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <form method="POST" action="statistical.php">
+                    <a class="nav-link" href="statistical.php">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                        <span>Thống kê</span></a>
+                </form>
             </li>
 
             <!-- Divider -->
@@ -342,8 +345,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </form>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
 
                             <div class="input-group-append">
@@ -357,13 +359,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
 
@@ -415,17 +415,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         if ($products->num_rows > 0) {
                                             foreach ($products as $product) {
                                         ?>
-                                        <tr>
-                                            <td><?php echo $product['product_id'] ?></td>
-                                            <td><img src="<?php echo "../assets/imgs/" . $product['product_image'] ?>"
-                                                    style="width: 70px; height: 70px; object-fit:cover" /></td>
-                                            <td><?php echo $product['product_name'] ?></td>
-                                            <td><?php echo $product['product_quantity'] ?></td>
-                                            <td><a class="btn btn-success" href="javascript:void(0);"
-                                                    onclick="confirmDelete(<?php echo $product['product_id']; ?>)">Thêm
-                                                    vào kho</a>
-                                            </td>
-                                        </tr>
+                                                <tr>
+                                                    <td><?php echo $product['product_id'] ?></td>
+                                                    <td><img src="<?php echo "../assets/imgs/" . $product['product_image'] ?>" style="width: 70px; height: 70px; object-fit:cover" /></td>
+                                                    <td><?php echo $product['product_name'] ?></td>
+                                                    <td><?php echo $product['product_quantity'] ?></td>
+                                                    <td><a class="btn btn-success" href="javascript:void(0);" onclick="confirmDelete(<?php echo $product['product_id']; ?>)">Thêm
+                                                            vào kho</a>
+                                                    </td>
+                                                </tr>
                                         <?php }
                                         } else {
                                             echo '<tr><td colspan="9" style="text-align: center;">Sản phẩm không tồn tại</td></tr>';
@@ -454,10 +452,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
                                         <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
                                         <?php if ($page_no >= 3) { ?>
-                                        <li class="page-item"><a class="page-link" href="#">...</a></li>
-                                        <li class="page-item"><a class="page-link"
-                                                href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a>
-                                        </li>
+                                            <li class="page-item"><a class="page-link" href="#">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a>
+                                            </li>
                                         <?php } ?>
 
                                         <li class="page-item <?php if ($page_no >= $total_no_of_page) {
@@ -504,8 +501,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -528,7 +524,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="modal-content">
             <span class="close" id="dong">&times;</span>
             <p>Nhập số lượng sản phẩm</p>
-            <input type="text" name="product_quantity" autocomplete="off" />
+            <input type="text" name="product_quantity" autocomplete="off" required />
             <div class="button">
                 <button id="confirmDeleteBtn">Thêm</button>
                 <button id="cancelDeleteBtn">Hủy</button>
@@ -556,56 +552,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="js/demo/datatables-demo.js"></script>
 
     <script>
-    // JavaScript để điều khiển modal popup
-    var modal = document.getElementById('deleteModal');
-    var confirmBtn = document.getElementById("confirmDeleteBtn");
-    var cancelBtn = document.getElementById("cancelDeleteBtn");
-    var inputQuantity; // Khai báo biến
+        // JavaScript để điều khiển modal popup
+        var modal = document.getElementById('deleteModal');
+        var confirmBtn = document.getElementById("confirmDeleteBtn");
+        var cancelBtn = document.getElementById("cancelDeleteBtn");
+        var inputQuantity; // Khai báo biến
 
-    // Lấy giá trị của ô input khi người dùng nhập
-    var quantityInput = document.querySelector('input[name="product_quantity"]');
-    quantityInput.addEventListener('input', function() {
-        inputQuantity = this.value;
-    });
+        // Lấy giá trị của ô input khi người dùng nhập
+        var quantityInput = document.querySelector('input[name="product_quantity"]');
+        quantityInput.addEventListener('input', function() {
+            inputQuantity = this.value;
+        });
 
-    // Mở modal khi nhấn nút Xóa
-    function confirmDelete(productId) {
-        modal.style.display = "block";
+        // Mở modal khi nhấn nút Xóa
+        function confirmDelete(productId) {
+            modal.style.display = "block";
 
-        // Xác nhận xóa
-        confirmBtn.onclick = function() {
-            // Thay đổi nội dung của modal thành "Thêm thành công"
-            var modalContent = document.querySelector("#deleteModal .modal-content");
-            modalContent.innerHTML = '<span class="close" id="dong">&times;</span><p>Thêm thành công</p>';
+            // Xác nhận xóa
+            confirmBtn.onclick = function() {
+                // Thay đổi nội dung của modal thành "Thêm thành công"
+                var modalContent = document.querySelector("#deleteModal .modal-content");
+                modalContent.innerHTML = '<span class="close" id="dong">&times;</span><p>Thêm thành công</p>';
 
-            // Tạo URL với product_id và product_quantity
-            var url = 'add_product_quantity.php?product_id=' + productId + '&product_quantity=' + inputQuantity;
+                // Tạo URL với product_id và product_quantity
+                var url = 'add_product_quantity.php?product_id=' + productId + '&product_quantity=' + inputQuantity;
 
-            // Chuyển hướng đến trang add_product_quantity.php với URL mới
-            setTimeout(function() {
+                // Chuyển hướng đến trang add_product_quantity.php với URL mới
+                setTimeout(function() {
+                    modal.style.display = "none";
+                    window.location.href = url;
+                }, 1000);
+            }
+
+            // Hủy xóa
+            cancelBtn.onclick = function() {
                 modal.style.display = "none";
-                window.location.href = url;
-            }, 1000);
+            }
         }
 
-        // Hủy xóa
-        cancelBtn.onclick = function() {
+        // Đóng modal khi nhấn vào nút đóng
+        var closeBtn = document.getElementById("dong");
+        closeBtn.onclick = function() {
             modal.style.display = "none";
         }
-    }
 
-    // Đóng modal khi nhấn vào nút đóng
-    var closeBtn = document.getElementById("dong");
-    closeBtn.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // Đóng modal khi nhấn ra ngoài modal
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        // Đóng modal khi nhấn ra ngoài modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
-    }
     </script>
 
 </body>

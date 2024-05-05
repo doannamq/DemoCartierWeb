@@ -24,7 +24,11 @@ include('../server/connection.php')
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet">
 
@@ -70,7 +74,7 @@ include('../server/connection.php')
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">EShop Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Cartier Admin</div>
             </a>
 
             <!-- Divider -->
@@ -89,23 +93,15 @@ include('../server/connection.php')
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="index.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span>Đơn hàng</span></a>
             </li>
             <hr class="sidebar-divider">
 
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="add_new_delivery.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Tạo đơn hàng</span></a>
-            </li> -->
-            <!-- Divider -->
-            <!-- <hr class="sidebar-divider"> -->
-
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="products.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-box"></i>
                     <span>Sản phẩm</span></a>
             </li>
             <!-- Divider -->
@@ -113,7 +109,7 @@ include('../server/connection.php')
 
             <li class="nav-item">
                 <a class="nav-link" href="account.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-user"></i>
                     <span>Tài khoản</span></a>
             </li>
             <!-- Divider -->
@@ -122,7 +118,7 @@ include('../server/connection.php')
 
             <li class="nav-item">
                 <a class="nav-link" href="add_new_product.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-square-plus"></i>
                     <span>Thêm sản phẩm mới</span></a>
             </li>
             <!-- Divider -->
@@ -130,9 +126,20 @@ include('../server/connection.php')
 
             <li class="nav-item">
                 <a class="nav-link" href="ware_house.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-warehouse"></i>
                     <span>Kho hàng</span></a>
             </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <form method="POST" action="statistical.php">
+                    <a class="nav-link" href="statistical.php">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                        <span>Thống kê</span></a>
+                </form>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
         </ul>

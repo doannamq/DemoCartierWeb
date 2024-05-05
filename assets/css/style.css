@@ -1130,13 +1130,13 @@ ul li a:hover{
     list-style: none;
     padding: 0;
     margin: 0;
-    position: absolute; /* Đặt vị trí tuyệt đối */
-    z-index: 1000; /* Đảm bảo phần tử nằm trên các phần tử khác */
-    background-color: white; /* Màu nền của danh sách */
-    border: 1px solid #ccc; /* Viền của danh sách */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ */
-    max-height: 150px; /* Chiều cao tối đa của danh sách */
-    overflow-y: auto; /* Cho phép cuộn dọc */
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-height: 150px;
+    overflow-y: auto; 
 }
 #province-list li,
 #district-list li,
@@ -1211,3 +1211,115 @@ ul li a:hover{
     background-color: white;
     color: black
 }
+
+.cod{
+background-color: coral;
+color: white;
+padding: 0;
+margin: 10px;
+padding: 5px 80px;
+border-radius: 5px;
+cursor: pointer;
+}
+
+.cod:hover{
+    background-color: rgb(227, 108, 64);
+}
+
+.alert-success{
+    background-color: transparent;
+    text-align: center;
+    color: rgb(40,167,69);
+    font-weight: bold;
+    border: none;
+}
+
+.send-status {
+    background-color:transparent;
+    color: #4CAF50;
+    text-align: center;
+    margin-bottom: 100px;   
+    margin-top: 80px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Select size */
+#select-size,
+#select-size-bracelet {
+    margin-bottom: 30px;
+    margin-top: 10px;
+    text-align: center;
+    width: 220px;
+    height: 40px;
+    border: 1px solid black;
+    border-radius: 0;
+  }
+
+#select-size option,
+#select-size-bracelet option {
+    text-align: center;
+    text-align: left;
+  }
+
+/* Định dạng cho phần chứa donut chart */
+.donut-chart-container {
+    width: 49%;
+    float: left;
+    padding-right: 1%;
+}
+
+/* Điều chỉnh kích thước của donut chart */
+#chartContainer {
+    max-width: 100%;
+    height: auto;
+}
+
+.new-orders,
+.bounce-rate{
+    width: 45%;
+    height: 200px;
+    background-color: rgb(0,124,255);
+    color: white;
+    border-radius: 5px;
+}
+
+.new-orders-title,
+.bounce-rate-title{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(0,120,246);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px 5px 0px 0px;
+    box-shadow: 0px 1px 0px white;
+}
+
+.new-orders p,
+.bounce-rate p{
+    margin: 0px 0px 0px 10px;
+    font-weight: 600;
+}
+
+.new-orders h2,
+.bounce-rate h2{
+    margin: 50px 0px 0px 20px;
+}
+
+.bounce-rate {
+    background-color: rgb(40,167,69);
+}
+
+.bounce-rate-title{
+    background-color: rgb(38,162,66);
+}
+
+.hide-order{
+    display: none;
+}
+
+.active-order{
+    display: block;
+}
+

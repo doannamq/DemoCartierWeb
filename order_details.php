@@ -6,6 +6,7 @@ if (isset($_POST['order_details_btn']) && isset($_POST['order_id'])) {
 
     $order_id = $_POST['order_id'];
     $order_status = $_POST['order_status'];
+    $cancel_order = $_POST['cancel_order'];
 
     $stmt = $conn->prepare("SELECT * FROM order_items WHERE order_id = ?");
 
@@ -81,7 +82,7 @@ function calculateTotalOrderPrice($order_details)
 
     </table>
 
-    <?php if ($order_status == "not paid") { ?>
+    <?php if ($order_status == "not paid" && $cancel_order != "canceled") { ?>
 
     <form style="float: right;" method="POST" action="payment.php">
         <input type="hidden" name="order_id" value="<?php echo $order_id ?>" />
@@ -90,6 +91,10 @@ function calculateTotalOrderPrice($order_details)
         <input type="submit" name="order_pay_btn" class="btn btn_primary" value="Thanh toán ngay" />
     </form>
 
+    <?php } else { ?>
+    <form style="float: right;" method="POST">
+        <input type="submit" class="btn btn_primary" value="Đã hủy" />
+    </form>
     <?php } ?>
 
 </section>

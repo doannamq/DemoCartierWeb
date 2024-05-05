@@ -1,45 +1,34 @@
 <?php
-session_start();
+
+include('../server/connection.php');
+
+// Lấy tổng doanh thu
+$sql_revenue = "SELECT SUM(order_cost) AS total_revenue FROM orders";
+$result_revenue = $conn->query($sql_revenue);
+$row_revenue = $result_revenue->fetch_assoc();
+$total_revenue = $row_revenue['total_revenue'];
+
+// Lấy số lượng đơn hàng
+$sql_orders = "SELECT COUNT(*) AS total_orders FROM orders";
+$result_orders = $conn->query($sql_orders);
+$row_orders = $result_orders->fetch_assoc();
+$total_orders = $row_orders['total_orders'];
+
+// Lấy sản phẩm bán chạy nhất
+$sql_bestseller = "SELECT p.product_name, SUM(od.product_quantity) AS total_quantity
+                   FROM order_items od
+                   JOIN products p ON od.product_id = p.product_id
+                   GROUP BY p.product_id
+                   ORDER BY total_quantity DESC
+                   LIMIT 1";
+$result_bestseller = $conn->query($sql_bestseller);
+$row_bestseller = $result_bestseller->fetch_assoc();
+$bestseller_name = $row_bestseller['product_name'];
+$bestseller_quantity = $row_bestseller['total_quantity'];
+
+// Đóng kết nối
+$conn->close();
 ?>
-
-<?php
-include('../server/connection.php')
-?>
-
-<?php
-
-if (isset($_GET['product_id'])) {
-    $product_id = $_GET['product_id'];
-    $stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
-    $stmt->bind_param('i', $product_id);
-    $stmt->execute();
-    $products = $stmt->get_result();
-} else if (isset($_POST['edit_btn'])) {
-
-    $product_id = $_POST['product_id'];
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $price = $_POST['price'];
-    $offer = $_POST['offer'];
-    $color = $_POST['color'];
-    $category = $_POST['category'];
-
-    $stmt = $conn->prepare("UPDATE products SET product_name = ?, product_description = ?, product_price = ?, 
-    product_special_offer = ?, product_color = ?, product_category = ? WHERE product_id = ?");
-    $stmt->bind_param('ssssssi', $title, $description, $price, $offer, $color, $category, $product_id);
-
-    if ($stmt->execute()) {
-        header("location: products.php?edit_success_message = product has been updated successfully");
-    } else {
-        header('location: products.php?edit_failure_message = error occurred, try again');
-    }
-} else {
-    header('location: products.php');
-    exit;
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,7 +40,7 @@ if (isset($_GET['product_id'])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>EShop Admin 2</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -61,37 +50,28 @@ if (isset($_GET['product_id'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
+    <title>Thống kê</title>
     <style>
-        #edit-product {
-            display: flex;
-            flex-direction: column;
+        body {
+            font-family: Arial, sans-serif;
         }
 
-        h2 {
-            color: black;
+        h1 {
+            text-align: center;
         }
 
-        label {
-            color: black;
-        }
-
-        input[type="text"] {
-            width: 100%;
-        }
-
-        select {
-            font-size: 18px;
-            padding: 5px 0px;
+        .stats {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
     </style>
-
 </head>
 
 <body id="page-top">
@@ -236,62 +216,31 @@ if (isset($_GET['product_id'])) {
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
+                    <form action="index.php" method="POST">
+                        <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
+                    </form>
 
-                    <!-- Edit Product -->
-                    <div id="edit-product" class="table-responsive">
-                        <h2>Sửa sản phẩm</h2>
-                        <div>
-                            <form id="edit-form" method="POST" action="edit_product.php">
-                                <p style="color: red;"><?php if (isset($_GET['error'])) {
-                                                            echo $_GET['error'];
-                                                        } ?> </p>
-                                <div class="form-group mt-2">
-
-                                    <?php foreach ($products as $product) { ?>
-                                        <input type="hidden" name="product_id" value="<?php echo $product['product_id'] ?>" />
-                                        <label>Tên sản phẩm</label>
-                                        <input type="text" class="form-control" id="product-name" value="<?php echo $product['product_name']; ?>" name="title" placeholder="Title" />
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label>Mô tả sản phẩm</label>
-                                    <textarea class="form-control" id="producu-desc" name="description" placeholder="Mô tả sản phẩm"><?php echo $product['product_description']; ?></textarea>
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label>Giá</label>
-                                    <input type="text" class="form-control" id="producu-price" value="<?php echo $product['product_price']; ?>" name="price" placeholder="Giá" />
-                                </div>
-                                <div class="form-group mt-2" style="display: flex; flex-direction:column">
-                                    <label>Loại sản phẩm</label>
-                                    <select class="form-select" required name="category">
-                                        <option value="bracelet">Vòng tay</option>
-                                        <option value="ring">Nhẫn</option>
-                                        <option value="watches">Đồng hồ</option>
-                                        <option value="necklace">Vòng cổ</option>
-                                        <option value="bag">Túi xách</option>
-                                        <option value="glasses">Kính mắt</option>
-                                        <option value="perfume">Nước hoa</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label>Màu sắc</label>
-                                    <input type="text" class="form-control" id="producu-color" value="<?php echo $product['product_color']; ?>" name="color" placeholder="Màu sắc" required />
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label>Giảm giá</label>
-                                    <input type="number" class="form-control" value="<?php echo $product['product_special_offer']; ?>" id="product-offer" name="offer" placeholder="Giảm giá %" />
-                                </div>
-
-                                <div class="form-group mt-3">
-                                    <input type="submit" class="btn btn-primary" name="edit_btn" value="Sửa" />
-                                </div>
-
-                            <?php } ?>
-
-                            </form>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Thống kê</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats">
+                                <h2>Doanh thu</h2>
+                                <p>Tổng doanh thu: $ <?php echo number_format($total_revenue, 2); ?></p>
+                            </div>
+                            <div class="stats">
+                                <h2>Đơn hàng</h2>
+                                <p>Số lượng đơn hàng: <?php echo $total_orders; ?></p>
+                            </div>
+                            <div class="stats">
+                                <h2>Sản phẩm bán chạy nhất</h2>
+                                <p>Tên sản phẩm: <?php echo $bestseller_name; ?></p>
+                                <p>Số lượng bán: <?php echo $bestseller_quantity; ?></p>
+                            </div>
                         </div>
                     </div>
-                    <!--End Edit Product -->
 
                 </div>
                 <!-- /.container-fluid -->
@@ -338,6 +287,7 @@ if (isset($_GET['product_id'])) {
             </div>
         </div>
     </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>

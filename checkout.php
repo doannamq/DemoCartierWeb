@@ -223,6 +223,49 @@ $(document).ready(function() {
         });
     });
 
+    /////////////////////////////////
+    $('#checkout-district').on('input', function() {
+        var searchText = $(this).val().trim().toLowerCase();
+        if (searchText === '') {
+            $('#district-list').hide();
+            return;
+        }
+
+        if (selectedProvinceId === null) {
+            // Không có tỉnh/thành phố được chọn, ẩn danh sách quận/huyện
+            $('#district-list').hide();
+            return;
+        }
+
+        var token = 'af98b191-ffaf-11ee-b1d4-92b443b7a897';
+        var shopID = 191981;
+        $.ajax({
+            url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=' +
+                selectedProvinceId,
+            method: 'GET',
+            headers: {
+                'Token': token,
+                'ShopId': shopID
+            },
+            success: function(response) {
+                var filteredDistricts = response.data.filter(function(district) {
+                    return district.DistrictName.toLowerCase().includes(searchText);
+                });
+
+                $('#district-list').empty();
+                filteredDistricts.forEach(function(district) {
+                    $('#district-list').append('<li data-district-id="' + district
+                        .DistrictID + '">' + district.DistrictName + '</li>');
+                });
+                $('#district-list').show();
+            },
+            error: function(xhr, status, error) {
+                console.log('Error fetching district list:', error);
+            }
+        });
+    });
+    /////////////////////////////////
+
     $('#district-list').on('mousedown', 'li', function() {
         selectedDistrictId = $(this).data('district-id');
         $('#checkout-district').val($(this).text());
@@ -272,6 +315,48 @@ $(document).ready(function() {
             }
         });
     });
+
+    /////////////////////////////////////
+    $('#checkout-ward').on('input', function() {
+        var searchText = $(this).val().trim().toLowerCase();
+        if (searchText === '') {
+            $('#ward-list').hide();
+            return;
+        }
+
+        if (selectedProvinceId === null || selectedDistrictId === null) {
+            // Không có tỉnh/thành phố hoặc quận/huyện được chọn, ẩn danh sách phường/xã
+            $('#ward-list').hide();
+            return;
+        }
+
+        var token = 'af98b191-ffaf-11ee-b1d4-92b443b7a897';
+        var shopID = 191981;
+        $.ajax({
+            url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=' +
+                selectedDistrictId,
+            method: 'GET',
+            headers: {
+                'Token': token,
+                'ShopId': shopID
+            },
+            success: function(response) {
+                var filteredWards = response.data.filter(function(ward) {
+                    return ward.WardName.toLowerCase().includes(searchText);
+                });
+
+                $('#ward-list').empty();
+                filteredWards.forEach(function(ward) {
+                    $('#ward-list').append('<li>' + ward.WardName + '</li>');
+                });
+                $('#ward-list').show();
+            },
+            error: function(xhr, status, error) {
+                console.log('Error fetching ward list:', error);
+            }
+        });
+    });
+    ////////////////////////////////////
 
     // Xử lý khi chọn phường/xã từ danh sách
     $('#ward-list').on('mousedown', 'li', function() {

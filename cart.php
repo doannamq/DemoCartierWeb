@@ -18,7 +18,7 @@ if (isset($_POST['add_to_cart'])) {
                 'product_name' => $_POST['product_name'],
                 'product_price' => $_POST['product_price'],
                 'product_image' => $_POST['product_image'],
-                'product_quantity' => $_POST['product_quantity']
+                'product_quantity' => $_POST['product_quantity'],
             );
 
             $_SESSION['cart'][$product_id] = $product_array;
@@ -135,40 +135,42 @@ function calculateTotalCart()
 
         <?php if (isset($_SESSION['cart'])) { ?>
 
-            <?php foreach ($_SESSION['cart'] as $key => $value) { ?>
+        <?php foreach ($_SESSION['cart'] as $key => $value) { ?>
 
-                <tr>
-                    <td>
-                        <div class="product-info">
-                            <img src="assets/imgs/<?php echo $value['product_image']; ?>" />
-                            <div>
-                                <p><?php echo $value['product_name']; ?></p>
-                                <small><span>$</span> <?php echo $value['product_price']; ?></small>
-                                <br>
-                                <form method="POST" action="cart.php">
-                                    <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
-                                    <input type="submit" name="remove_product" class="remove-btn" value="Xóa" />
-                                </form>
-                            </div>
-                        </div>
-                    </td>
-
-                    <td>
-
-                        <form method="POST" action="cart.php" onsubmit="return validateQuantity()">
+        <tr>
+            <td>
+                <div class="product-info">
+                    <img src="assets/imgs/<?php echo $value['product_image']; ?>" />
+                    <div>
+                        <p><?php echo $value['product_name']; ?></p>
+                        <small><span>$</span> <?php echo $value['product_price']; ?></small>
+                        <br>
+                        <form method="POST" action="cart.php">
                             <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
-                            <input type="number" name="product_quantity" id="product_quantity" value="<?php echo $value['product_quantity']; ?>" />
-                            <input type="submit" class="edit-btn" value="Sửa" name="edit_quantity" />
+                            <input type="submit" name="remove_product" class="remove-btn" value="Xóa" />
                         </form>
-                    </td>
+                    </div>
+                </div>
+            </td>
 
-                    <td>
-                        <span>$</span>
-                        <span class="product-price"><?php echo number_format($value['product_quantity'] * floatval(str_replace(',', '', $value['product_price'])), 2, '.', ','); ?></span>
-                    </td>
-                </tr>
+            <td>
 
-            <?php } ?>
+                <form method="POST" action="cart.php" onsubmit="return validateQuantity()">
+                    <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
+                    <input type="number" name="product_quantity" id="product_quantity"
+                        value="<?php echo $value['product_quantity']; ?>" />
+                    <input type="submit" class="edit-btn" value="Sửa" name="edit_quantity" />
+                </form>
+            </td>
+
+            <td>
+                <span>$</span>
+                <span
+                    class="product-price"><?php echo number_format($value['product_quantity'] * floatval(str_replace(',', '', $value['product_price'])), 2, '.', ','); ?></span>
+            </td>
+        </tr>
+
+        <?php } ?>
 
         <?php } ?>
 
@@ -179,7 +181,7 @@ function calculateTotalCart()
             <tr>
                 <td>Tổng</td>
                 <?php if (isset($_SESSION['cart'])) { ?>
-                    <td>$ <?php echo number_format($_SESSION['total'], 2, '.', ','); ?></td>
+                <td>$ <?php echo number_format($_SESSION['total'], 2, '.', ','); ?></td>
                 <?php } ?>
             </tr>
         </table>

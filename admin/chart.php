@@ -1,3 +1,47 @@
+<?php
+
+session_start();
+
+include('../server/connection.php');
+
+$stmt1 = $conn->prepare("SELECT COUNT(*) AS total_orders FROM orders WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK);");
+$stmt1->execute();
+$new_orders = $stmt1->get_result();
+$row1 = $new_orders->fetch_assoc();
+$total_orders_week = $row1['total_orders'];
+
+$stmt2 = $conn->prepare("SELECT COUNT(*) AS user FROM users");
+$stmt2->execute();
+$users = $stmt2->get_result();
+$row2 = $users->fetch_assoc();
+$total_users = $row2['user'];
+
+$stmt3 = $conn->prepare("SELECT COUNT(*) AS visitors FROM unique_visitors");
+$stmt3->execute();
+$visitors = $stmt3->get_result();
+$row3 = $visitors->fetch_assoc();
+$total_visitors = $row3['visitors'];
+
+$stmt4 = $conn->prepare("SELECT COUNT(*) AS cancel_orders FROM orders WHERE cancel_order = 'canceled'");
+$stmt4->execute();
+$cancel_orders = $stmt4->get_result();
+$row4 = $cancel_orders->fetch_assoc();
+$total_cancel_orders = $row4['cancel_orders'];
+
+$stmt_total_orders = $conn->prepare("SELECT COUNT(*) AS total_orders FROM orders");
+$stmt_total_orders->execute();
+$total_orders_result = $stmt_total_orders->get_result();
+$row5 = $total_orders_result->fetch_assoc();
+$total_orders = $row5['total_orders'];
+
+if ($total_orders > 0) {
+    $cancel_percentage = ($total_cancel_orders / $total_orders) * 100;
+    $cancel_percentage = round($cancel_percentage, 2);
+} else {
+    $cancel_percentage = 0;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,69 +54,72 @@
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <title>Doanh số bán hàng theo tháng và năm</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     <script>
-    var data;
-    var chart;
+        var data;
+        var chart;
 
-    // Sử dụng AJAX để tải dữ liệu từ test_chart.php
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '../data_chart.php', true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            data = JSON.parse(xhr.responseText);
-            createChart();
-        }
-    };
-    xhr.send();
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '../data_chart.php', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                data = JSON.parse(xhr.responseText);
+                createChart();
+            }
+        };
+        xhr.send();
 
-    // Hàm tạo biểu đồ
-    function createChart() {
-        var years = Object.keys(data);
-        var datasets = years.map(function(year) {
-            return {
-                label: 'Năm ' + year,
-                data: data[year],
-                borderColor: getRandomColor(),
-                backgroundColor: getRandomColor(0.2),
-                fill: false
-            };
-        });
+        function createChart() {
+            var years = Object.keys(data);
+            var datasets = years.map(function(year) {
+                return {
+                    label: 'Năm ' + year,
+                    data: data[year],
+                    borderColor: getRandomColor(),
+                    backgroundColor: getRandomColor(0.2),
+                    fill: false
+                };
+            });
 
-        var ctx = document.getElementById('salesChart').getContext('2d');
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                datasets: datasets
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    // Hàm tạo màu ngẫu nhiên
-    function getRandomColor(alpha = 1) {
-        var r = Math.floor(Math.random() * 256);
-        var g = Math.floor(Math.random() * 256);
-        var b = Math.floor(Math.random() * 256);
-        return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
-    }
+        function getRandomColor(alpha = 1) {
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+            return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+        }
     </script>
 </head>
 
@@ -93,7 +140,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">EShop Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Cartier Admin</div>
             </a>
 
             <!-- Divider -->
@@ -112,23 +159,15 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="index.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span>Đơn hàng</span></a>
             </li>
             <hr class="sidebar-divider">
 
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="add_new_delivery.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Tạo đơn hàng</span></a>
-            </li> -->
-            <!-- Divider -->
-            <!-- <hr class="sidebar-divider"> -->
-
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="products.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-box"></i>
                     <span>Sản phẩm</span></a>
             </li>
             <!-- Divider -->
@@ -136,7 +175,7 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="account.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-user"></i>
                     <span>Tài khoản</span></a>
             </li>
             <!-- Divider -->
@@ -145,7 +184,7 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="add_new_product.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-square-plus"></i>
                     <span>Thêm sản phẩm mới</span></a>
             </li>
             <!-- Divider -->
@@ -153,9 +192,20 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="ware_house.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fa-solid fa-warehouse"></i>
                     <span>Kho hàng</span></a>
             </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <form method="POST" action="statistical.php">
+                    <a class="nav-link" href="statistical.php">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                        <span>Thống kê</span></a>
+                </form>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
         </ul>
@@ -176,8 +226,7 @@
                     </form>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
 
                             <div class="input-group-append">
@@ -191,13 +240,11 @@
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
 
@@ -229,6 +276,44 @@
                         </div>
                         <div class="card-body">
                             <canvas id="salesChart"></canvas>
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Số lượng bán ra của loại sản phẩm</h6>
+                            </div>
+                            <div class="card-body donut-chart-container">
+                                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content:space-between; margin-top: 20px">
+                                <div class="new-orders">
+                                    <div class="new-orders-title">
+                                        <i class="fa-solid fa-bag-shopping"></i>
+                                        <p>New Orders</p>
+                                    </div>
+                                    <h2><?php echo $total_orders_week; ?></h2>
+                                </div>
+                                <div class="bounce-rate">
+                                    <div class="bounce-rate-title">
+                                        <i class="fa-solid fa-chart-simple"></i>
+                                        <p>Bounce Rate</p>
+                                    </div>
+                                    <h2><?php echo $cancel_percentage . "%"; ?></h2>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content:space-between; margin-top: 20px">
+                                <div class="new-orders">
+                                    <div class="new-orders-title">
+                                        <i class="fa-solid fa-bag-shopping"></i>
+                                        <p>User Registrations</p>
+                                    </div>
+                                    <h2><?php echo $total_users; ?></h2>
+                                </div>
+                                <div class="bounce-rate">
+                                    <div class="bounce-rate-title">
+                                        <i class="fa-solid fa-chart-simple"></i>
+                                        <p>Unique Vistors</p>
+                                    </div>
+                                    <h2><?php echo $total_visitors ?></h2>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -237,7 +322,6 @@
 
             </div>
             <!-- End of Main Content -->
-
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -260,8 +344,7 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -295,6 +378,38 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
+
+    <script>
+        window.onload = function() {
+            // Gửi yêu cầu AJAX để lấy dữ liệu donut chart
+            var xhrDonut = new XMLHttpRequest();
+            xhrDonut.open('GET', '../data_donut_chart.php', true);
+            xhrDonut.onreadystatechange = function() {
+                if (xhrDonut.readyState === 4 && xhrDonut.status === 200) {
+                    // Xử lý dữ liệu trả về từ data_donut_chart.php
+                    var dataDonut = JSON.parse(xhrDonut.responseText);
+
+                    // Tạo biểu đồ Doughnut Chart
+                    var chartDonut = new CanvasJS.Chart("chartContainer", {
+                        animationEnabled: true,
+                        title: {
+                            text: "Danh mục sản phẩm"
+                        },
+                        data: [{
+                            type: "doughnut",
+                            startAngle: 60,
+                            indexLabelFontSize: 17,
+                            indexLabel: "{label} - #percent%",
+                            toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+                            dataPoints: dataDonut
+                        }]
+                    });
+                    chartDonut.render();
+                }
+            };
+            xhrDonut.send();
+        }
+    </script>
 </body>
 
 
