@@ -11,6 +11,14 @@ if (isset($_GET['product_id']) && isset($_GET['product_quantity'])) {
     $product_id = $_GET['product_id'];
     $quantity = $_GET['product_quantity'];
 
+    // Kiểm tra nếu $quantity nhỏ hơn 0
+    if ($quantity < 0) {
+        // Yêu cầu nhập lại
+        $error_message = "Số lượng sản phẩm không hợp lệ. Vui lòng nhập lại số lượng lớn hơn hoặc bằng 0.";
+        header("Location: ware_house.php?error_message=" . urlencode($error_message));
+        exit;
+    }
+
     // Lấy số lượng hiện tại của sản phẩm
     $stmt = $conn->prepare("SELECT product_quantity FROM products WHERE product_id = ?");
     $stmt->bind_param("s", $product_id);

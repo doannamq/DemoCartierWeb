@@ -54,13 +54,18 @@ if ($total_orders > 0) {
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet">
@@ -72,54 +77,63 @@ if ($total_orders > 0) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     <script>
-        var data;
-        var chart;
+    var data;
+    var chart;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '../data_chart.php', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            data = JSON.parse(xhr.responseText);
+            createChart();
+        }
+    };
+    xhr.send();
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '../data_chart.php', true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                data = JSON.parse(xhr.responseText);
-                createChart();
-            }
-        };
-        xhr.send();
+    var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        function createChart() {
-            var years = Object.keys(data);
-            var datasets = years.map(function(year) {
-                return {
-                    label: 'Năm ' + year,
-                    data: data[year],
-                    borderColor: getRandomColor(),
-                    backgroundColor: getRandomColor(0.2),
-                    fill: false
-                };
-            });
+    function createChart() {
+        var years = Object.keys(data);
+        var datasets = years.map(function(year) {
+            return {
+                label: 'Năm ' + year,
+                data: data[year],
+                borderColor: getRandomColor(),
+                backgroundColor: getRandomColor(0.2),
+                fill: false
+            };
+        });
 
-            var ctx = document.getElementById('salesChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                    datasets: datasets
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: monthNames,
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return '$' + value.toLocaleString();
+                            }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 
-        function getRandomColor(alpha = 1) {
-            var r = Math.floor(Math.random() * 256);
-            var g = Math.floor(Math.random() * 256);
-            var b = Math.floor(Math.random() * 256);
-            return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
-        }
+    function getRandomColor(alpha = 1) {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        // var r = 67;
+        // var g = 166;
+        // var b = 246;
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
     </script>
 </head>
 
@@ -226,7 +240,8 @@ if ($total_orders > 0) {
                     </form>
 
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
 
                             <div class="input-group-append">
@@ -240,11 +255,13 @@ if ($total_orders > 0) {
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
 
@@ -286,30 +303,32 @@ if ($total_orders > 0) {
                                 <div class="new-orders">
                                     <div class="new-orders-title">
                                         <i class="fa-solid fa-bag-shopping"></i>
-                                        <p>New Orders</p>
+                                        <p>Số lượng đơn hàng mới</p>
                                     </div>
                                     <h2><?php echo $total_orders_week; ?></h2>
                                 </div>
                                 <div class="bounce-rate">
                                     <div class="bounce-rate-title">
                                         <i class="fa-solid fa-chart-simple"></i>
-                                        <p>Bounce Rate</p>
+                                        <p>Tỷ lệ hủy đơn</p>
                                     </div>
                                     <h2><?php echo $cancel_percentage . "%"; ?></h2>
+                                    <div class="more-info"><a href="bounce_rate.php">Xem thêm<i
+                                                class="fa-solid fa-circle-arrow-right"></i></a></div>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content:space-between; margin-top: 20px">
-                                <div class="new-orders">
-                                    <div class="new-orders-title">
-                                        <i class="fa-solid fa-bag-shopping"></i>
-                                        <p>User Registrations</p>
+                                <div class="user-registrations">
+                                    <div class="user-registrations-title">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        <p>Số lượng người đăng ký</p>
                                     </div>
                                     <h2><?php echo $total_users; ?></h2>
                                 </div>
-                                <div class="bounce-rate">
-                                    <div class="bounce-rate-title">
-                                        <i class="fa-solid fa-chart-simple"></i>
-                                        <p>Unique Vistors</p>
+                                <div class="unique-visitors">
+                                    <div class="unique-visitors-title">
+                                        <i class="fa-solid fa-user-check"></i>
+                                        <p>Khách ghé thăm</p>
                                     </div>
                                     <h2><?php echo $total_visitors ?></h2>
                                 </div>
@@ -344,7 +363,8 @@ if ($total_orders > 0) {
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -380,35 +400,35 @@ if ($total_orders > 0) {
     <script src="js/demo/datatables-demo.js"></script>
 
     <script>
-        window.onload = function() {
-            // Gửi yêu cầu AJAX để lấy dữ liệu donut chart
-            var xhrDonut = new XMLHttpRequest();
-            xhrDonut.open('GET', '../data_donut_chart.php', true);
-            xhrDonut.onreadystatechange = function() {
-                if (xhrDonut.readyState === 4 && xhrDonut.status === 200) {
-                    // Xử lý dữ liệu trả về từ data_donut_chart.php
-                    var dataDonut = JSON.parse(xhrDonut.responseText);
+    window.onload = function() {
+        // Gửi yêu cầu AJAX để lấy dữ liệu donut chart
+        var xhrDonut = new XMLHttpRequest();
+        xhrDonut.open('GET', '../data_donut_chart.php', true);
+        xhrDonut.onreadystatechange = function() {
+            if (xhrDonut.readyState === 4 && xhrDonut.status === 200) {
+                // Xử lý dữ liệu trả về từ data_donut_chart.php
+                var dataDonut = JSON.parse(xhrDonut.responseText);
 
-                    // Tạo biểu đồ Doughnut Chart
-                    var chartDonut = new CanvasJS.Chart("chartContainer", {
-                        animationEnabled: true,
-                        title: {
-                            text: "Danh mục sản phẩm"
-                        },
-                        data: [{
-                            type: "doughnut",
-                            startAngle: 60,
-                            indexLabelFontSize: 17,
-                            indexLabel: "{label} - #percent%",
-                            toolTipContent: "<b>{label}:</b> {y} (#percent%)",
-                            dataPoints: dataDonut
-                        }]
-                    });
-                    chartDonut.render();
-                }
-            };
-            xhrDonut.send();
-        }
+                // Tạo biểu đồ Doughnut Chart
+                var chartDonut = new CanvasJS.Chart("chartContainer", {
+                    animationEnabled: true,
+                    title: {
+                        text: "Danh mục sản phẩm"
+                    },
+                    data: [{
+                        type: "doughnut",
+                        startAngle: 60,
+                        indexLabelFontSize: 17,
+                        indexLabel: "{label} - #percent%",
+                        toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+                        dataPoints: dataDonut
+                    }]
+                });
+                chartDonut.render();
+            }
+        };
+        xhrDonut.send();
+    }
     </script>
 </body>
 

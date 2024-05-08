@@ -2,6 +2,12 @@
 
 include('server/connection.php');
 
+session_start();
+if (isset($_SESSION['user_name']) && isset($_SESSION['user_id'])) {
+    $user_name = $_SESSION['user_name'];
+    $user_id = $_SESSION['user_id'];
+}
+
 if (isset($_GET['product_id'])) {
 
     $product_id = $_GET["product_id"];
@@ -17,10 +23,24 @@ if (isset($_GET['product_id'])) {
 } else {
 
     header(('location: index.php'));
+    exit;
 }
 
 $size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64];
 
+//get all comments of product
+if (isset($_GET['product_id'])) {
+
+    $product_id = $_GET["product_id"];
+
+    $stmt1 = $conn->prepare("SELECT * FROM comments WHERE product_id = ? ORDER BY comment_id DESC");
+
+    $stmt1->bind_param("i", $product_id);
+
+    $stmt1->execute();
+
+    $comments = $stmt1->get_result();
+}
 ?>
 
 <?php include('layouts/header.php'); ?>
@@ -30,7 +50,6 @@ $size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
     <div class="row mt-5">
 
         <?php while ($row = $product->fetch_assoc()) { ?>
-
         <div class="col-lg-5 col-md-6 col-sm-12">
             <img class="img-fluid w-100 pb-1" src="assets/imgs/<?php echo $row['product_image'] ?>" id="mainImg" />
             <div class="small-img-group">
@@ -91,20 +110,56 @@ $size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
             <span><?php echo $row['product_description'] ?></span>
         </div>
 
+        <div id="comment">
+            <h3 class="my-4">Nhận xét</h3>
+            <form method="POST" action="comments.php">
+                <p class="text-center" style="color: red;">
+                    <?php if (isset($_GET['message'])) {
+                    echo $_GET['message'];
+                } ?>
+                    <?php if (isset($_GET['message'])) { ?>
+
+                    <a href="login.php" class="btn btn_primary">Đăng nhập</a>
+
+                    <?php } ?>
+                </p>
+                <input type="hidden" name="user_name" value="<?php echo $user_name ?>" />
+                <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
+                <input type="hidden" name="product_name" value="<?php echo $row['product_name'] ?>" />
+                <input type="hidden" name="product_id" value="<?php echo $row['product_id'] ?>" />
+                <div class="comment-container">
+                    <textarea name="comment_content" placeholder="Thêm nhận xét" required></textarea>
+                    <input type="submit" name="comment" value="Bình luận" />
+                </div>
+
+                <?php while ($comment_row = $comments->fetch_assoc()) { ?>
+                <div class="commented">
+                    <div style="display: flex; align-items:center">
+                        <h4 class="py-4"><?php echo $comment_row['user_name'] ?></h4>
+                        <h5><i><?php echo $comment_row['create_at'] ?></i></h5>
+                    </div>
+                    <p><?php echo $comment_row['comment_content'] ?></p>
+                </div>
+                <?php } ?>
+
+            </form>
+        </div>
+
         <?php } ?>
 
     </div>
 </section>
 
+
 <!--Related Products-->
 <section id="related-products" class="my-5 pb-5">
-    <div class="container text-center mt-5 py-5">
+    <div class="container text-center mt-5 py-1">
         <h3>Sản phẩm liên quan</h3>
         <hr class="mx-auto">
     </div>
     <div class="row mx-auto container-fluid">
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/bag1.1.avif" />
+            <img class="img-fluid" src="assets/imgs/bag1.1.avif" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -117,7 +172,7 @@ $size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
             <button class="buy-btn">Mua ngay</button>
         </div>
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/LOVE RING, 3 DIAMONDS1.jpg" />
+            <img class="img-fluid" src="assets/imgs/LOVE RING, 3 DIAMONDS1.jpg" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -130,7 +185,7 @@ $size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
             <button class="buy-btn">Mua ngay</button>
         </div>
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/perfume1.1.avif" />
+            <img class="img-fluid" src="assets/imgs/perfume1.1.avif" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -143,7 +198,7 @@ $size_array = ['Select size', 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57
             <button class="buy-btn">Mua ngay</button>
         </div>
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-            <img class="img-fluid mb-3" src="assets/imgs/SANTOS DE CARTIER WATCH1.jpg" />
+            <img class="img-fluid" src="assets/imgs/SANTOS DE CARTIER WATCH1.jpg" />
             <div class="star">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>

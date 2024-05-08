@@ -1276,7 +1276,9 @@ cursor: pointer;
 }
 
 .new-orders,
-.bounce-rate{
+.bounce-rate,
+.user-registrations,
+.unique-visitors{
     width: 45%;
     height: 200px;
     background-color: rgb(0,124,255);
@@ -1285,7 +1287,10 @@ cursor: pointer;
 }
 
 .new-orders-title,
-.bounce-rate-title{
+.bounce-rate-title,
+.user-registrations-title,
+.unique-visitors-title
+{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1297,22 +1302,38 @@ cursor: pointer;
 }
 
 .new-orders p,
-.bounce-rate p{
+.bounce-rate p,
+.user-registrations p,
+.unique-visitors p{
     margin: 0px 0px 0px 10px;
     font-weight: 600;
 }
 
 .new-orders h2,
-.bounce-rate h2{
+.bounce-rate h2,
+.user-registrations h2,
+.unique-visitors h2{
     margin: 50px 0px 0px 20px;
 }
 
-.bounce-rate {
-    background-color: rgb(40,167,69);
+.new-orders,
+.new-orders-title{
+    background: linear-gradient(to right, rgb(50, 210, 242), rgb(11, 169, 204));
 }
 
-.bounce-rate-title{
-    background-color: rgb(38,162,66);
+.bounce-rate,
+.bounce-rate-title {
+    background: linear-gradient(to right,rgb(239, 108, 174),rgb(214, 25, 110));
+}
+
+.user-registrations,
+.user-registrations-title{
+    background: linear-gradient(to right, rgb(235, 210, 118), rgb(236, 165, 23));
+}
+
+.unique-visitors,
+.unique-visitors-title{
+    background: linear-gradient(to right, rgb(84, 226, 136), rgb(22,164,74));
 }
 
 .hide-order{
@@ -1323,3 +1344,60 @@ cursor: pointer;
     display: block;
 }
 
+.more-info{
+    font-size: 18px;
+    font-weight: 600;
+    border-top: 1px solid white;
+    margin-top: 20px;
+    padding-top: 10px;
+    padding-right: 20px;
+    text-align: right;
+}
+
+.fa-circle-arrow-right{
+    margin-left: 10px;
+}
+
+.more-info a{
+    text-decoration: none;
+    color: white
+}
+
+/*Comment container */
+.comment-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-container textarea{
+    padding: 10px;
+    height: 100px;
+    margin-bottom: 15px;
+}
+
+.comment-container input{
+    width: 150px;
+    background-color: coral;
+    padding: 0;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+.comment-container input:hover{
+    background-color: rgb(40,167,69);
+    transition: ease-in-out 0.4s;
+}
+
+.comment-container textarea:focus{
+    outline: none;
+}
+
+.commented{
+    border-bottom: 1px solid black;
+}
+
+.commented h4{
+    margin-right: 10px;
+}

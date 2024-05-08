@@ -91,7 +91,7 @@ function calculateTotalOrderPrice($order_details)
         <input type="submit" name="order_pay_btn" class="btn btn_primary" value="Thanh toán ngay" />
     </form>
 
-    <?php } else { ?>
+    <?php } else if ($cancel_order == 'canceled') { ?>
     <form style="float: right;" method="POST">
         <input type="submit" class="btn btn_primary" value="Đã hủy" />
     </form>

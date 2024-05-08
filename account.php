@@ -242,6 +242,9 @@ if (isset($_SESSION['logged_in'])) {
     <?php } ?>
 </section>
 
+<?php
+if ($cancel_orders->num_rows != 0) {
+?>
 <div id="dondahuy"></div>
 <section id="orders" class="orders container my-5 py-5">
     <div class="container mt-2">
@@ -319,6 +322,7 @@ if (isset($_SESSION['logged_in'])) {
         </table>
     </div>
 </section>
+<?php } ?>
 <script>
 const order1 = document.getElementById('order1');
 const order2 = document.getElementById('order2');

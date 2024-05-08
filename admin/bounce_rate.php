@@ -1,81 +1,45 @@
 <?php
-include('../server/connection.php');
+session_start();
 ?>
 
 <?php
-// Kiểm tra nếu có tìm kiếm
-if (isset($_POST['search'])) {
+include('../server/connection.php')
+?>
 
-    if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
-        $page_no = $_GET['page_no'];
-    } else {
-        $page_no = 1;
-    }
+<?php
+if (!isset($_SESSION['admin_logged_in'])) {
+    header('location: login.php');
+    exit;
+}
+?>
 
-    $timkiem = $_POST['search_box'];
-
-    // Truy vấn tìm kiếm sản phẩm theo product_id hoặc product_name
-    $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_name LIKE CONCAT('%', ?, '%') OR product_id = ?");
-    $stmt2->bind_param('ss', $timkiem, $timkiem);
-    $stmt2->execute();
-    $products = $stmt2->get_result();
+<?php
+if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
+    $page_no = $_GET['page_no'];
 } else {
-    //1.determine page no
-    if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
-        $page_no = $_GET['page_no'];
-    } else {
-        $page_no = 1;
-    }
-
-    //2.return number of products
-    $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products");
-    $stmt1->execute();
-    $stmt1->bind_result($total_records);
-    $stmt1->store_result();
-    $stmt1->fetch();
-
-
-    //3.products per page
-    $total_records_per_page  = 10;
-
-    $offset = ($page_no - 1) * $total_records_per_page;
-
-    $previous_page = $page_no - 1;
-    $next_page = $page_no + 1;
-
-    $adjacent = "2";
-
-    $total_no_of_page = ceil($total_records / $total_records_per_page);
-
-
-    //4.get all orders
-    $stmt2 = $conn->prepare("SELECT * FROM products ORDER BY product_id LIMIT $offset, $total_records_per_page");
-    $stmt2->execute();
-    $products = $stmt2->get_result();
+    $page_no = 1;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $product_id = $_POST["product_id"];
-    $quantity = $_POST["quantity"];
+$stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM orders WHERE cancel_order = 'canceled'");
+$stmt1->execute();
+$stmt1->bind_result($total_records);
+$stmt1->store_result();
+$stmt1->fetch();
 
-    // Lấy số lượng hiện tại của sản phẩm
-    $stmt = $conn->prepare("SELECT product_quantity FROM products WHERE product_id = ?");
-    $stmt->bind_param("s", $product_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    $current_quantity = $row["product_quantity"];
+$total_records_per_page  = 10;
 
-    // Cập nhật số lượng mới
-    $new_quantity = $current_quantity + $quantity;
-    $stmt = $conn->prepare("UPDATE products SET product_quantity = ? WHERE product_id = ?");
-    $stmt->bind_param("is", $new_quantity, $product_id);
-    $stmt->execute();
+$offset = ($page_no - 1) * $total_records_per_page;
 
-    // Redirect về trang ware_house.php
-    header("Location: ware_house.php");
-    exit();
-}
+$previous_page = $page_no - 1;
+$next_page = $page_no + 1;
+
+$adjacent = "2";
+
+$total_no_of_page = ceil($total_records / $total_records_per_page);
+
+$stmt = $conn->prepare("SELECT o.*, u.user_name FROM orders o JOIN users u ON o.user_id = u.user_id WHERE o.cancel_order = 'canceled' ORDER BY o.order_id DESC LIMIT $offset, $total_records_per_page");
+$stmt->execute();
+$cancel_orders = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -93,17 +57,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Custom styles for this template -->
     <link href="style.css" rel="stylesheet">
@@ -112,139 +72,135 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <style>
-    form {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
+        form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
 
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 20% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 30%;
-    }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+        }
 
-    input[name="product_quantity"] {
-        margin-top: 10px;
-        margin-bottom: 20px;
-        padding: 5px;
-        font-size: 16px;
-        width: 100%;
-    }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
+        p {
+            color: black;
+            font-size: 22px;
+            text-align: center;
+        }
 
-    p {
-        color: black;
-        font-size: 22px;
-        text-align: center;
-    }
+        .button {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
 
-    .button {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
+        #confirmDeleteBtn,
+        #cancelDeleteBtn {
+            padding: 15px 50px;
+            border-radius: 5px;
+            border: 1px solid white;
+            font-size: 19px;
+            font-weight: bold;
+            color: white
+        }
 
-    #confirmDeleteBtn,
-    #cancelDeleteBtn {
-        padding: 15px 50px;
-        border-radius: 5px;
-        border: 1px solid white;
-        font-size: 19px;
-        font-weight: bold;
-        color: white
-    }
+        #confirmDeleteBtn {
+            background-color: rgb(105, 219, 103);
+        }
 
-    #confirmDeleteBtn {
-        background-color: rgb(105, 219, 103);
-    }
+        #confirmDeleteBtn:hover {
+            background-color: rgb(119, 229, 117);
+        }
 
-    #confirmDeleteBtn:hover {
-        background-color: rgb(119, 229, 117);
-    }
+        #cancelDeleteBtn {
+            background-color: rgb(229, 90, 84);
+        }
 
-    #cancelDeleteBtn {
-        background-color: rgb(229, 90, 84);
-    }
+        #cancelDeleteBtn:hover {
+            background-color: rgb(240, 105, 100);
+        }
 
-    #cancelDeleteBtn:hover {
-        background-color: rgb(240, 105, 100);
-    }
+        #deleteSuccessMessage {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-    #deleteSuccessMessage {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
+        #deleteSuccessMessage .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+        }
 
-    #deleteSuccessMessage .modal-content {
-        background-color: #fefefe;
-        margin: 20% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 30%;
-    }
+        #deleteSuccessMessage p {
+            color: black;
+            font-size: 22px;
+            text-align: center;
+        }
 
-    #deleteSuccessMessage p {
-        color: black;
-        font-size: 22px;
-        text-align: center;
-    }
+        #deleteSuccessMessage .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    #deleteSuccessMessage .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
+        #deleteSuccessMessage .close:hover,
+        #deleteSuccessMessage .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    #deleteSuccessMessage .close:hover,
-    #deleteSuccessMessage .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
+        form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
 
-    form {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
+        .btn-outline-success a {
+            text-decoration: none;
+        }
     </style>
 
 </head>
@@ -350,8 +306,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </form>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
 
                             <div class="input-group-append">
@@ -365,13 +320,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
 
@@ -394,52 +347,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <form action="ware_house.php" method="POST">
+                    <form action="index.php" method="POST">
                         <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
-                        <!-- <input type="text" name="search_box" id="search_box" placeholder="Nhập mã/tên sản phẩm cần tìm"
-                            autocomplete="off" onkeydown="if (event.keyCode == 13) submitSearch();" />
-                        <input type="hidden" name="search" /> -->
                     </form>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Kho hàng</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Đơn hàng đã hủy</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Mã sản phẩm</th>
-                                            <th>Hình ảnh</th>
-                                            <th>Tên sản phẩm</th>
-                                            <th>Số lượng trong kho</th>
-                                            <th>Thêm số lượng sản phẩm</th>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Mã khách hàng</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>SDT Khách hàng</th>
+                                            <th>Tên khách hàng</th>
+                                            <th>Địa chỉ Khách hàng</th>
+                                            <th>Hủy</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                        if ($products->num_rows > 0) {
-                                            foreach ($products as $product) {
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $product['product_id'] ?></td>
-                                            <td><img src="<?php echo "../assets/imgs/" . $product['product_image'] ?>"
-                                                    style="width: 70px; height: 70px; object-fit:cover" /></td>
-                                            <td><?php echo $product['product_name'] ?></td>
-                                            <td><?php echo $product['product_quantity'] ?></td>
-                                            <td><a class="btn btn-success" href="javascript:void(0);"
-                                                    onclick="confirmDelete(<?php echo $product['product_id']; ?>)">Thêm
-                                                    vào kho</a>
-                                            </td>
-                                        </tr>
-                                        <?php }
-                                        } else {
-                                            echo '<tr><td colspan="9" style="text-align: center;">Sản phẩm không tồn tại</td></tr>';
-                                        }
-                                        ?>
 
+                                        <?php if ($cancel_orders->num_rows > 0) {
+                                            foreach ($cancel_orders as $order) { ?>
+
+                                                <tr>
+                                                    <td><?php echo $order['order_id'] ?></td>
+                                                    <td><?php echo $order['user_id'] ?></td>
+                                                    <td><?php echo $order['order_date'] ?></td>
+                                                    <td><?php echo '0' . $order['user_phone'] ?></td>
+                                                    <td><?php echo $order['user_name'] ?></td>
+                                                    <td><?php echo $order['user_address'] . ', ' . $order['user_ward'] . ', ' . $order['user_district'] . ', ' . $order['user_city'] ?>
+                                                    </td>
+
+                                                    <?php
+                                                    if ($order['confirm'] == 'awaiting confirm' && $order['cancel_order'] != 'canceled') {
+                                                    ?>
+                                                        <td>
+                                                            <a class="btn btn-info" href="confirm.php?order_id=<?php echo $order['order_id']; ?>&page_no=<?php echo $page_no; ?>">
+                                                                Xác nhận</a>
+                                                        </td>
+                                                    <?php } elseif ($order['confirm'] == 'confirmed') { ?>
+                                                        <td>
+                                                            <button class="btn btn-success" disabled>Đã xác nhận</button>
+                                                        </td>
+                                                    <?php } else if ($order['cancel_order'] == "canceled") { ?>
+                                                        <td>
+                                                            <button class="btn btn-success" disabled>Đã hủy</button>
+                                                        </td>
+                                                    <?php  } ?>
+                                                <?php } ?>
+                                            <?php } ?>
                                     </tbody>
                                 </table>
 
@@ -462,10 +424,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
                                         <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
                                         <?php if ($page_no >= 3) { ?>
-                                        <li class="page-item"><a class="page-link" href="#">...</a></li>
-                                        <li class="page-item"><a class="page-link"
-                                                href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a>
-                                        </li>
+                                            <li class="page-item"><a class="page-link" href="#">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a>
+                                            </li>
                                         <?php } ?>
 
                                         <li class="page-item <?php if ($page_no >= $total_no_of_page) {
@@ -512,8 +473,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -535,17 +495,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <span class="close" id="dong">&times;</span>
-            <p>Nhập số lượng sản phẩm</p>
-            <span id="quantityError" style="color: red; display: none;">Vui lòng nhập số lượng lớn hơn 0</span>
-            <input type="text" name="product_quantity" autocomplete="off" required />
+            <p>Bạn có muốn xóa đơn hàng này không?</p>
             <div class="button">
-                <button id="confirmDeleteBtn">Thêm</button>
+                <button id="confirmDeleteBtn">Xóa</button>
                 <button id="cancelDeleteBtn">Hủy</button>
             </div>
         </div>
     </div>
-
-
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -565,60 +521,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="js/demo/datatables-demo.js"></script>
 
     <script>
-    // JavaScript để điều khiển modal popup
-    var modal = document.getElementById('deleteModal');
-    var confirmBtn = document.getElementById("confirmDeleteBtn");
-    var cancelBtn = document.getElementById("cancelDeleteBtn");
-    var inputQuantity; // Khai báo biến
+        // JavaScript để điều khiển modal popup
+        var modal = document.getElementById('deleteModal');
+        var confirmBtn = document.getElementById("confirmDeleteBtn");
+        var cancelBtn = document.getElementById("cancelDeleteBtn");
 
-    // Lấy giá trị của ô input khi người dùng nhập
-    var quantityInput = document.querySelector('input[name="product_quantity"]');
-    quantityInput.addEventListener('input', function() {
-        inputQuantity = this.value;
-    });
+        // Mở modal khi nhấn nút Xóa
+        function confirmDelete(orderId) {
+            modal.style.display = "block";
 
-    // Mở modal khi nhấn nút Xóa
-    function confirmDelete(productId) {
-        modal.style.display = "block";
-
-        confirmBtn.onclick = function() {
-            var quantityError = document.getElementById("quantityError");
-            if (inputQuantity < 0) {
-                quantityError.style.display = "block";
-            } else if (inputQuantity > 0) {
-                quantityError.style.display = "none";
+            // Xác nhận xóa
+            confirmBtn.onclick = function() {
+                // Thay đổi nội dung của modal thành "Xóa thành công"
                 var modalContent = document.querySelector("#deleteModal .modal-content");
-                modalContent.innerHTML = '<span class="close" id="dong">&times;</span><p>Thêm thành công</p>';
-                var url = 'add_product_quantity.php?product_id=' + productId + '&product_quantity=' + inputQuantity;
+                modalContent.innerHTML = '<span class="close" id="dong">&times;</span><p>Xóa thành công</p>';
+                // Tự đóng modal sau 2 giây
                 setTimeout(function() {
                     modal.style.display = "none";
-                    window.location.href = url;
+                    window.location.href = 'delete_order.php?order_id=' + orderId;
                 }, 1000);
-            } else {
-                quantityError.style.display = "none";
+            }
+
+            // Hủy xóa
+            cancelBtn.onclick = function() {
+                modal.style.display = "none";
             }
         }
 
-        // Hủy xóa
-        cancelBtn.onclick = function() {
+        // Đóng modal khi nhấn vào nút đóng
+        var closeBtn = document.getElementById("dong");
+        closeBtn.onclick = function() {
             modal.style.display = "none";
         }
-    }
 
-    // Đóng modal khi nhấn vào nút đóng
-    var closeBtn = document.getElementById("dong");
-    closeBtn.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // Đóng modal khi nhấn ra ngoài modal
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        // Đóng modal khi nhấn ra ngoài modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
-    }
     </script>
-
 </body>
 
 </html>
