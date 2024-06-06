@@ -26,11 +26,11 @@ if (isset($_POST['change_password'])) {
 
     //if password dont match
     if ($password !== $confirmPassword) {
-        header('location: account.php?error=password dont match');
+        header('location: account.php?error=Mật khẩu không khớp');
 
         //if password is less than 6 characters
     } else if (strlen($password) < 6) {
-        header('location: account.php?error=password must be at least 6 characters');
+        header('location: account.php?error=Mật khẩu phải có ít nhất 6 ký tự');
 
         //no errors
     } else {
@@ -51,7 +51,7 @@ if (isset($_SESSION['logged_in'])) {
     $user_id = $_SESSION['user_id'];
 
     // $stmt = $conn->prepare("SELECT * FROM orders WHERE user_id = ?");
-    $stmt = $conn->prepare("SELECT * FROM orders WHERE user_id = ? AND cancel_order = 'do not cancel'");
+    $stmt = $conn->prepare("SELECT * FROM orders WHERE user_id = ? AND cancel_order = 'do not cancel' ORDER BY order_id DESC");
 
     $stmt->bind_param('i', $user_id);
 
@@ -85,7 +85,7 @@ if (isset($_SESSION['logged_in'])) {
     <div class="row container mx-auto">
 
         <?php if (isset($_GET['payment_message'])) { ?>
-        <p class="mt-5 text-center" style="color: #3FD168;"><?php echo $_GET['payment_message']; ?></p>
+            <p class="mt-5 text-center" style="color: #3FD168;"><?php echo $_GET['payment_message']; ?></p>
         <?php } ?>
 
         <div class="text-center mt-3 pt-5 col-lg-5 col-md-12 col-sm-12">
@@ -127,13 +127,11 @@ if (isset($_SESSION['logged_in'])) {
                 <hr class="mx-auto">
                 <div class="form-group">
                     <label>Mật khẩu</label>
-                    <input type="password" class="form-control" id="account-password" name="password"
-                        placeholder="Mật khẩu" required />
+                    <input type="password" class="form-control" id="account-password" name="password" placeholder="Mật khẩu" required />
                 </div>
                 <div class="form-group">
                     <label>Xác nhận mật khẩu</label>
-                    <input type="password" class="form-control" id="account-password-confirm" name="confirmPassword"
-                        placeholder="Xác nhận mật khẩu" required />
+                    <input type="password" class="form-control" id="account-password-confirm" name="confirmPassword" placeholder="Xác nhận mật khẩu" required />
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Đổi mật khẩu" name="change_password" class="btn" id="change-pass-btn" />
@@ -159,186 +157,182 @@ if (isset($_SESSION['logged_in'])) {
         echo "</div>";
     } else {
     ?>
-    <!-- <div id="content-order1" class="active-order"> -->
-    <div>
-        <table>
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Giá hóa đơn</th>
-                <th>Thanh toán</th>
-                <th>Vận chuyển</th>
-                <th>Ngày đặt hàng</th>
-                <th>Hủy</th>
-                <th>Chi tiết đơn hàng</th>
-            </tr>
+        <!-- <div id="content-order1" class="active-order"> -->
+        <div>
+            <table>
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Giá hóa đơn</th>
+                    <th>Thanh toán</th>
+                    <th>Vận chuyển</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Hủy</th>
+                    <th>Chi tiết đơn hàng</th>
+                </tr>
 
-            <?php while ($row = $orders->fetch_assoc()) { ?>
+                <?php while ($row = $orders->fetch_assoc()) { ?>
 
-            <tr>
-                <td>
-                    <div class="product-info">
-                        <!-- <img src="assets/imgs/featured1.png" /> -->
-                        <div>
-                            <p class="mt-3"><?php echo $row['order_id']; ?></p>
-                        </div>
-                    </div>
-                </td>
+                    <tr>
+                        <td>
+                            <div class="product-info">
+                                <!-- <img src="assets/imgs/featured1.png" /> -->
+                                <div>
+                                    <p class="mt-3"><?php echo $row['order_id']; ?></p>
+                                </div>
+                            </div>
+                        </td>
 
-                <td>
-                    <span><?php echo number_format($row['order_cost'], 2, '.', ',') ?></span>
-                </td>
+                        <td>
+                            <span><?php echo number_format($row['order_cost'], 2, '.', ',') ?></span>
+                        </td>
 
-                <?php if ($row['order_status'] == 'paid') { ?>
-                <td>
-                    <span>Đã thanh toán</span>
-                </td>
-                <?php } else { ?>
-                <td>
-                    <span>COD</span>
-                </td>
-                <?php } ?>
+                        <?php if ($row['order_status'] == 'paid') { ?>
+                            <td>
+                                <span>Đã thanh toán</span>
+                            </td>
+                        <?php } else { ?>
+                            <td>
+                                <span>COD</span>
+                            </td>
+                        <?php } ?>
 
-                <!-- <td>
+                        <!-- <td>
                         <span><?php echo $row['delivery_status'] ?></span>
                     </td> -->
-                <?php if ($row['delivery_status'] == 'awaiting pickup') { ?>
-                <td>
-                    <span>Chờ lấy hàng</span>
-                </td>
-                <?php } else { ?>
-                <td></td>
+                        <?php if ($row['delivery_status'] == 'awaiting pickup') { ?>
+                            <td>
+                                <span>Chờ lấy hàng</span>
+                            </td>
+                        <?php } else { ?>
+                            <td></td>
+                        <?php } ?>
+
+                        <td>
+                            <span><?php echo $row['order_date'] ?></span>
+                        </td>
+
+                        <td>
+                            <?php if ($row['cancel_order'] == 'do not cancel' && $row['confirm'] != "confirmed") { ?>
+                                <a class="btn btn-danger" style="text-decoration: none; color: white" href="cancel_order.php?order_id=<?php echo $row['order_id'] ?>">Hủy</a>
+                            <?php } else if ($row['cancel_order'] != 'do not cancel') { ?>
+                                <a class="btn btn-success" style="text-decoration: none; color: white" href="re_order.php?order_id=<?php echo $row['order_id'] ?>">Đặt lại</a>
+                            <?php } else if ($row['confirm'] == 'confirmed') { ?>
+                                <button class="btn btn-danger" disabled>Hủy</button>
+                            <?php } ?>
+                        </td>
+
+                        <td>
+                            <form method="POST" action="order_details.php">
+                                <input type="hidden" value="<?php echo $row['order_status']; ?>" name="order_status" />
+                                <input type="hidden" value="<?php echo $row['order_id']; ?>" name="order_id" />
+                                <input type="hidden" value="<?php echo $row['cancel_order']; ?>" name="cancel_order" />
+                                <input class="btn order-details-btn" name="order_details_btn" type="submit" value="Chi tiết" />
+                            </form>
+                        </td>
+                    </tr>
+
                 <?php } ?>
 
-                <td>
-                    <span><?php echo $row['order_date'] ?></span>
-                </td>
-
-                <td>
-                    <?php if ($row['cancel_order'] == 'do not cancel' && $row['confirm'] != "confirmed") { ?>
-                    <a class="btn btn-danger" style="text-decoration: none; color: white"
-                        href="cancel_order.php?order_id=<?php echo $row['order_id'] ?>">Hủy</a>
-                    <?php } else if ($row['cancel_order'] != 'do not cancel') { ?>
-                    <a class="btn btn-success" style="text-decoration: none; color: white"
-                        href="re_order.php?order_id=<?php echo $row['order_id'] ?>">Đặt lại</a>
-                    <?php } else if ($row['confirm'] == 'confirmed') { ?>
-                    <button class="btn btn-danger" disabled>Hủy</button>
-                    <?php } ?>
-                </td>
-
-                <td>
-                    <form method="POST" action="order_details.php">
-                        <input type="hidden" value="<?php echo $row['order_status']; ?>" name="order_status" />
-                        <input type="hidden" value="<?php echo $row['order_id']; ?>" name="order_id" />
-                        <input type="hidden" value="<?php echo $row['cancel_order']; ?>" name="cancel_order" />
-                        <input class="btn order-details-btn" name="order_details_btn" type="submit" value="Chi tiết" />
-                    </form>
-                </td>
-            </tr>
-
-            <?php } ?>
-
-        </table>
-    </div>
+            </table>
+        </div>
     <?php } ?>
 </section>
 
 <?php
 if ($cancel_orders->num_rows != 0) {
 ?>
-<div id="dondahuy"></div>
-<section id="orders" class="orders container my-5 py-5">
-    <div class="container mt-2">
-        <h2 class="font-weight-bold text-center" id="order2">Đơn đã hủy</h2>
-        <hr class="mx-auto">
-    </div>
-    <!-- <div id="content-order2" class="hide-order"> -->
-    <div>
-        <table>
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Giá hóa đơn</th>
-                <th>Thanh toán</th>
-                <th>Ngày đặt hàng</th>
-                <th>Đặt lại đơn hàng</th>
-                <th>Chi tiết đơn hàng</th>
-            </tr>
+    <div id="dondahuy"></div>
+    <section id="orders" class="orders container my-5 py-5">
+        <div class="container mt-2">
+            <h2 class="font-weight-bold text-center" id="order2">Đơn đã hủy</h2>
+            <hr class="mx-auto">
+        </div>
+        <!-- <div id="content-order2" class="hide-order"> -->
+        <div>
+            <table>
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Giá hóa đơn</th>
+                    <th>Thanh toán</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Đặt lại đơn hàng</th>
+                    <th>Chi tiết đơn hàng</th>
+                </tr>
 
-            <?php while ($row = $cancel_orders->fetch_assoc()) { ?>
+                <?php while ($row = $cancel_orders->fetch_assoc()) { ?>
 
-            <tr>
-                <td>
-                    <div class="product-info">
-                        <!-- <img src="assets/imgs/featured1.png" /> -->
-                        <div>
-                            <p class="mt-3"><?php echo $row['order_id']; ?></p>
-                        </div>
-                    </div>
-                </td>
+                    <tr>
+                        <td>
+                            <div class="product-info">
+                                <!-- <img src="assets/imgs/featured1.png" /> -->
+                                <div>
+                                    <p class="mt-3"><?php echo $row['order_id']; ?></p>
+                                </div>
+                            </div>
+                        </td>
 
-                <td>
-                    <span><?php echo number_format($row['order_cost'], 2, '.', ',') ?></span>
-                </td>
+                        <td>
+                            <span><?php echo number_format($row['order_cost'], 2, '.', ',') ?></span>
+                        </td>
 
-                <?php if ($row['order_status'] == 'paid') { ?>
-                <td>
-                    <span>Đã thanh toán</span>
-                </td>
-                <?php } else { ?>
-                <td>
-                    <span>COD</span>
-                </td>
+                        <?php if ($row['order_status'] == 'paid') { ?>
+                            <td>
+                                <span>Đã thanh toán</span>
+                            </td>
+                        <?php } else { ?>
+                            <td>
+                                <span>COD</span>
+                            </td>
+                        <?php } ?>
+
+
+
+                        <td>
+                            <span><?php echo $row['order_date'] ?></span>
+                        </td>
+
+                        <td>
+                            <?php if ($row['cancel_order'] == 'do not cancel' && $row['confirm'] != "confirmed") { ?>
+                                <a class="btn btn-danger" style="text-decoration: none; color: white" href="cancel_order.php?order_id=<?php echo $row['order_id'] ?>">Hủy</a>
+                            <?php } else if ($row['cancel_order'] != 'do not cancel') { ?>
+                                <a class="btn btn-success" style="text-decoration: none; color: white" href="re_order.php?order_id=<?php echo $row['order_id'] ?>">Đặt lại</a>
+                            <?php } else if ($row['confirm'] == 'confirmed') { ?>
+                                <button class="btn btn-danger" disabled>Hủy</button>
+                            <?php } ?>
+                        </td>
+
+                        <td>
+                            <form method="POST" action="order_details.php">
+                                <input type="hidden" value="<?php echo $row['order_status']; ?>" name="order_status" />
+                                <input type="hidden" value="<?php echo $row['order_id']; ?>" name="order_id" />
+                                <input type="hidden" value="<?php echo $row['cancel_order']; ?>" name="cancel_order" />
+                                <input class="btn order-details-btn" name="order_details_btn" type="submit" value="Chi tiết" />
+                            </form>
+                        </td>
+                    </tr>
+
                 <?php } ?>
 
-
-
-                <td>
-                    <span><?php echo $row['order_date'] ?></span>
-                </td>
-
-                <td>
-                    <?php if ($row['cancel_order'] == 'do not cancel' && $row['confirm'] != "confirmed") { ?>
-                    <a class="btn btn-danger" style="text-decoration: none; color: white"
-                        href="cancel_order.php?order_id=<?php echo $row['order_id'] ?>">Hủy</a>
-                    <?php } else if ($row['cancel_order'] != 'do not cancel') { ?>
-                    <a class="btn btn-success" style="text-decoration: none; color: white"
-                        href="re_order.php?order_id=<?php echo $row['order_id'] ?>">Đặt lại</a>
-                    <?php } else if ($row['confirm'] == 'confirmed') { ?>
-                    <button class="btn btn-danger" disabled>Hủy</button>
-                    <?php } ?>
-                </td>
-
-                <td>
-                    <form method="POST" action="order_details.php">
-                        <input type="hidden" value="<?php echo $row['order_status']; ?>" name="order_status" />
-                        <input type="hidden" value="<?php echo $row['order_id']; ?>" name="order_id" />
-                        <input type="hidden" value="<?php echo $row['cancel_order']; ?>" name="cancel_order" />
-                        <input class="btn order-details-btn" name="order_details_btn" type="submit" value="Chi tiết" />
-                    </form>
-                </td>
-            </tr>
-
-            <?php } ?>
-
-        </table>
-    </div>
-</section>
+            </table>
+        </div>
+    </section>
 <?php } ?>
 <script>
-const order1 = document.getElementById('order1');
-const order2 = document.getElementById('order2');
-const contentOrder1 = document.getElementById('content-order1');
-const contentOrder2 = document.getElementById('content-order2');
+    const order1 = document.getElementById('order1');
+    const order2 = document.getElementById('order2');
+    const contentOrder1 = document.getElementById('content-order1');
+    const contentOrder2 = document.getElementById('content-order2');
 
-order1.addEventListener('click', () => {
-    contentOrder1.classList.add('active-order');
-    contentOrder2.classList.remove('active-order');
-    contentOrder2.classList.add('hide-order');
-});
+    order1.addEventListener('click', () => {
+        contentOrder1.classList.add('active-order');
+        contentOrder2.classList.remove('active-order');
+        contentOrder2.classList.add('hide-order');
+    });
 
-order2.addEventListener('click', () => {
-    contentOrder2.classList.remove('hide-order');
-    contentOrder1.classList.add('hide-order');
-    contentOrder1.classList.remove('active-order');
-});
+    order2.addEventListener('click', () => {
+        contentOrder2.classList.remove('hide-order');
+        contentOrder1.classList.add('hide-order');
+        contentOrder1.classList.remove('active-order');
+    });
 </script>
 <?php include('layouts/footer.php'); ?>

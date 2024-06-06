@@ -83,8 +83,7 @@ if (isset($_POST['register'])) {
                                     } ?></p>
             <div class="form-group">
                 <label>Họ và tên</label>
-                <input type="text" class="form-control" id="register-name" name="name" placeholder="Họ và tên"
-                    required />
+                <input type="text" class="form-control" id="register-name" name="name" placeholder="Họ và tên" required />
             </div>
             <div class="form-group">
                 <label>Email</label>
@@ -92,16 +91,14 @@ if (isset($_POST['register'])) {
             </div>
             <div class="form-group">
                 <label>Mật khẩu</label>
-                <input type="password" class="form-control" id="register-password" name="password"
-                    placeholder="Mật khẩu" required />
+                <input type="password" class="form-control" id="register-password" name="password" placeholder="Mật khẩu" required />
             </div>
             <div class="form-group">
                 <label>Xác nhận mật khẩu</label>
-                <input type="password" class="form-control" id="register-confirm-password" name="confirmPassword"
-                    placeholder="Xác nhận mật khẩu" required />
+                <input type="password" class="form-control" id="register-confirm-password" name="confirmPassword" placeholder="Xác nhận mật khẩu" required />
             </div>
             <div class="form-group">
-                <input type="submit" class="btn" id="register-btn" name="register" value="Register" />
+                <input type="submit" class="btn" id="register-btn" name="register" value="Đăng ký" />
             </div>
             <div class="form-group">
                 <a id="login-url" href="login.php" class="btn">Bạn đã có tài khoản? Đăng nhập ngay</a>

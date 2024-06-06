@@ -81,12 +81,7 @@ if (isset($_GET['product_id'])) {
             <?php } ?>
 
             <?php if ($row['product_category'] == 'ring') { ?>
-            <!-- <p style="margin-top: 20px;">FIND YOUR SIZE</p>
-            <select id="select-size" class="form-select">
-                <?php for ($i = 0; $i < count($size_array); $i++) { ?>
-                <option><?php echo $size_array[$i] ?></option>
-                <?php } ?>
-            </select> -->
+
             <p style="margin-top: 20px;">FIND YOUR SIZE</p>
             <select id="select-size" class="form-select" onchange="updateHiddenInput(this.value)">
                 <?php for ($i = 0; $i < count($size_array); $i++) { ?>
@@ -102,7 +97,12 @@ if (isset($_GET['product_id'])) {
                 <input type="hidden" name="product_price"
                     value="<?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>" />
                 <input type="number" name="product_quantity" value="1" id="product_quantity" />
-                <input type="hidden" name="product_size" id="hidden-size" value="" />
+
+                <?php if ($row['product_category'] == 'ring') { ?>
+                <input type="hidden" name="product_size" id="hidden-size" value="52" />
+                <?php } ?>
+                <input type="hidden" name="product_category" value="<?php echo $row['product_category'] ?>" />
+
                 <button class="buy-btn" id="buy-btn" type="submit" name="add_to_cart">Thêm vào giỏ</button>
             </form>
 
@@ -111,12 +111,12 @@ if (isset($_GET['product_id'])) {
         </div>
 
         <div id="comment">
-            <h3 class="my-4">Nhận xét</h3>
+            <h3 class="my-4">Bình luận</h3>
             <form method="POST" action="comments.php">
                 <p class="text-center" style="color: red;">
                     <?php if (isset($_GET['message'])) {
-                    echo $_GET['message'];
-                } ?>
+                            echo $_GET['message'];
+                        } ?>
                     <?php if (isset($_GET['message'])) { ?>
 
                     <a href="login.php" class="btn btn_primary">Đăng nhập</a>
@@ -128,7 +128,7 @@ if (isset($_GET['product_id'])) {
                 <input type="hidden" name="product_name" value="<?php echo $row['product_name'] ?>" />
                 <input type="hidden" name="product_id" value="<?php echo $row['product_id'] ?>" />
                 <div class="comment-container">
-                    <textarea name="comment_content" placeholder="Thêm nhận xét" required></textarea>
+                    <textarea name="comment_content" placeholder="Thêm bình luận" required></textarea>
                     <input type="submit" name="comment" value="Bình luận" />
                 </div>
 

@@ -19,15 +19,15 @@ if (isset($_POST['add_to_cart'])) {
                 'product_price' => $_POST['product_price'],
                 'product_image' => $_POST['product_image'],
                 'product_quantity' => $_POST['product_quantity'],
+                'product_size' => $_POST['product_size'],
+                'product_category' => $_POST['product_category']
             );
 
             $_SESSION['cart'][$product_id] = $product_array;
 
             //product has already been added
         } else {
-
             echo '<script>alert("Sản phẩm đã có trong giỏ hàng");</script>';
-            //echo '<script>window.location = "index.php"</script>';
         }
 
         //if this is the first product
@@ -38,13 +38,17 @@ if (isset($_POST['add_to_cart'])) {
         $product_price = $_POST['product_price'];
         $product_image = $_POST['product_image'];
         $product_quantity = $_POST['product_quantity'];
+        $product_size = $_POST['product_size'];
+        $product_category = $_POST['product_category'];
 
         $product_array = array(
             'product_id' => $product_id,
             'product_name' => $product_name,
             'product_price' => $product_price,
             'product_image' => $product_image,
-            'product_quantity' => $product_quantity
+            'product_quantity' => $product_quantity,
+            'product_size' => $product_size,
+            'product_category' => $product_category
         );
 
         $_SESSION['cart'][$product_id] = $product_array;
@@ -113,7 +117,6 @@ function calculateTotalCart()
 }
 
 
-
 ?>
 
 
@@ -135,42 +138,45 @@ function calculateTotalCart()
 
         <?php if (isset($_SESSION['cart'])) { ?>
 
-        <?php foreach ($_SESSION['cart'] as $key => $value) { ?>
+            <?php foreach ($_SESSION['cart'] as $key => $value) { ?>
 
-        <tr>
-            <td>
-                <div class="product-info">
-                    <img src="assets/imgs/<?php echo $value['product_image']; ?>" />
-                    <div>
-                        <p><?php echo $value['product_name']; ?></p>
-                        <small><span>$</span> <?php echo $value['product_price']; ?></small>
-                        <br>
-                        <form method="POST" action="cart.php">
+                <tr>
+                    <td>
+                        <div class="product-info">
+                            <img src="assets/imgs/<?php echo $value['product_image']; ?>" />
+                            <div>
+                                <div style="display: flex;">
+                                    <p><?php echo $value['product_name']; ?></p>
+                                    <?php if ($value['product_category'] == 'ring') { ?>
+                                        <p>(Size: <?php echo $value['product_size'] ?>)</p>
+                                    <?php } ?>
+                                </div>
+                                <small><span>$</span> <?php echo $value['product_price']; ?></small>
+                                <br>
+                                <form method="POST" action="cart.php">
+                                    <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
+                                    <input type="submit" name="remove_product" class="remove-btn" value="Xóa" />
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+
+                        <form method="POST" action="cart.php" onsubmit="return validateQuantity()">
                             <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
-                            <input type="submit" name="remove_product" class="remove-btn" value="Xóa" />
+                            <input type="number" name="product_quantity" id="product_quantity" value="<?php echo $value['product_quantity']; ?>" />
+                            <input type="submit" class="edit-btn" value="Sửa" name="edit_quantity" />
                         </form>
-                    </div>
-                </div>
-            </td>
+                    </td>
 
-            <td>
+                    <td>
+                        <span>$</span>
+                        <span class="product-price"><?php echo number_format($value['product_quantity'] * floatval(str_replace(',', '', $value['product_price'])), 2, '.', ','); ?></span>
+                    </td>
+                </tr>
 
-                <form method="POST" action="cart.php" onsubmit="return validateQuantity()">
-                    <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
-                    <input type="number" name="product_quantity" id="product_quantity"
-                        value="<?php echo $value['product_quantity']; ?>" />
-                    <input type="submit" class="edit-btn" value="Sửa" name="edit_quantity" />
-                </form>
-            </td>
-
-            <td>
-                <span>$</span>
-                <span
-                    class="product-price"><?php echo number_format($value['product_quantity'] * floatval(str_replace(',', '', $value['product_price'])), 2, '.', ','); ?></span>
-            </td>
-        </tr>
-
-        <?php } ?>
+            <?php } ?>
 
         <?php } ?>
 
@@ -181,7 +187,7 @@ function calculateTotalCart()
             <tr>
                 <td>Tổng</td>
                 <?php if (isset($_SESSION['cart'])) { ?>
-                <td>$ <?php echo number_format($_SESSION['total'], 2, '.', ','); ?></td>
+                    <td>$ <?php echo number_format($_SESSION['total'], 2, '.', ','); ?></td>
                 <?php } ?>
             </tr>
         </table>

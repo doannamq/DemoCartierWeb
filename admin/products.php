@@ -37,6 +37,7 @@ if (isset($_POST['search'])) {
     } else {
         $page_no = 1;
     }
+
     //2.return number of products
     $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products");
     $stmt1->execute();

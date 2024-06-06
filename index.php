@@ -48,29 +48,30 @@ if (!isset($_COOKIE['vistor_id'])) {
         <?php while ($row = $featured_products->fetch_assoc()) { ?>
 
 
-            <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-                <img class="img-fluid mb-3" style="height:400px; width:400px" src="assets/imgs/<?php echo $row['product_image']; ?>" />
-                <div class="star">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-                <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
-                <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
-                <?php if ($row['product_special_offer'] > 0) { ?>
-                    <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
-                    <h4 class="p-price">$
-                        <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
-                    </h4>
-                <?php } else { ?>
-                    <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
-                <?php } ?>
-                <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
-                    <button class="buy-btn">Mua ngay</button>
-                </a>
+        <div class="product text-center col-lg-3 col-md-4 col-sm-12">
+            <img class="img-fluid mb-3" style="height:400px; width:400px"
+                src="assets/imgs/<?php echo $row['product_image']; ?>" />
+            <div class="star">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
             </div>
+            <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+            <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
+            <?php if ($row['product_special_offer'] > 0) { ?>
+            <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
+            <h4 class="p-price">$
+                <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
+            </h4>
+            <?php } else { ?>
+            <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
+            <?php } ?>
+            <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
+                <button class="buy-btn">Mua ngay</button>
+            </a>
+        </div>
 
         <?php } ?>
     </div>
@@ -88,32 +89,33 @@ if (!isset($_COOKIE['vistor_id'])) {
 
         <?php while ($row = $product_special_offer->fetch_assoc()) { ?>
 
-            <div class="product text-center col-lg-3 col-md-4 col-sm-12" style="position:relative">
-                <div id="product-special-offer">
-                    <h4><?php echo $row['product_special_offer'] ?> %</h4>
-                </div>
-                <img class="img-fluid mb-3" style="height:400px; width:400px" src="assets/imgs/<?php echo $row['product_image']; ?>" />
-                <div class="star">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-                <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
-                <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
-                <?php if ($row['product_special_offer'] > 0) { ?>
-                    <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
-                    <h4 class="p-price">$
-                        <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
-                    </h4>
-                <?php } else { ?>
-                    <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
-                <?php } ?>
-                <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
-                    <button class="buy-btn">Mua ngay</button>
-                </a>
+        <div class="product text-center col-lg-3 col-md-4 col-sm-12" style="position:relative">
+            <div id="product-special-offer">
+                <h4><?php echo $row['product_special_offer'] ?> %</h4>
             </div>
+            <img class="img-fluid mb-3" style="height:400px; width:400px"
+                src="assets/imgs/<?php echo $row['product_image']; ?>" />
+            <div class="star">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+            </div>
+            <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+            <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
+            <?php if ($row['product_special_offer'] > 0) { ?>
+            <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
+            <h4 class="p-price">$
+                <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
+            </h4>
+            <?php } else { ?>
+            <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
+            <?php } ?>
+            <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
+                <button class="buy-btn">Mua ngay</button>
+            </a>
+        </div>
 
         <?php } ?>
 
@@ -146,29 +148,30 @@ if (!isset($_COOKIE['vistor_id'])) {
 
         <?php while ($row = $coats->fetch_assoc()) { ?>
 
-            <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-                <img class="img-fluid mb-3" style="height:400px; width:400px" src="assets/imgs/<?php echo $row['product_image']; ?>" />
-                <div class="star">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-                <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
-                <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
-                <?php if ($row['product_special_offer'] > 0) { ?>
-                    <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
-                    <h4 class="p-price">$
-                        <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
-                    </h4>
-                <?php } else { ?>
-                    <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
-                <?php } ?>
-                <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
-                    <button class="buy-btn">Mua ngay</button>
-                </a>
+        <div class="product text-center col-lg-3 col-md-4 col-sm-12">
+            <img class="img-fluid mb-3" style="height:400px; width:400px"
+                src="assets/imgs/<?php echo $row['product_image']; ?>" />
+            <div class="star">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
             </div>
+            <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+            <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
+            <?php if ($row['product_special_offer'] > 0) { ?>
+            <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
+            <h4 class="p-price">$
+                <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
+            </h4>
+            <?php } else { ?>
+            <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
+            <?php } ?>
+            <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
+                <button class="buy-btn">Mua ngay</button>
+            </a>
+        </div>
 
         <?php } ?>
 
@@ -189,29 +192,30 @@ if (!isset($_COOKIE['vistor_id'])) {
 
         <?php while ($row = $watches->fetch_assoc()) { ?>
 
-            <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-                <img class="img-fluid mb-3" style="height:400px; width:400px" src="assets/imgs/<?php echo $row['product_image']; ?>" />
-                <div class="star">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-                <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
-                <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
-                <?php if ($row['product_special_offer'] > 0) { ?>
-                    <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
-                    <h4 class="p-price">$
-                        <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
-                    </h4>
-                <?php } else { ?>
-                    <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
-                <?php } ?>
-                <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
-                    <button class="buy-btn">Mua ngay</button>
-                </a>
+        <div class="product text-center col-lg-3 col-md-4 col-sm-12">
+            <img class="img-fluid mb-3" style="height:400px; width:400px"
+                src="assets/imgs/<?php echo $row['product_image']; ?>" />
+            <div class="star">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
             </div>
+            <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+            <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
+            <?php if ($row['product_special_offer'] > 0) { ?>
+            <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
+            <h4 class="p-price">$
+                <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
+            </h4>
+            <?php } else { ?>
+            <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
+            <?php } ?>
+            <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
+                <button class="buy-btn">Mua ngay</button>
+            </a>
+        </div>
 
         <?php } ?>
 
@@ -231,29 +235,30 @@ if (!isset($_COOKIE['vistor_id'])) {
 
         <?php while ($row = $shoes->fetch_assoc()) { ?>
 
-            <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-                <img class="img-fluid mb-3" style="height:400px; width:400px" src="assets/imgs/<?php echo $row['product_image']; ?>" />
-                <div class="star">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-                <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
-                <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
-                <?php if ($row['product_special_offer'] > 0) { ?>
-                    <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
-                    <h4 class="p-price">$
-                        <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
-                    </h4>
-                <?php } else { ?>
-                    <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
-                <?php } ?>
-                <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
-                    <button class="buy-btn">Mua ngay</button>
-                </a>
+        <div class="product text-center col-lg-3 col-md-4 col-sm-12">
+            <img class="img-fluid mb-3" style="height:400px; width:400px"
+                src="assets/imgs/<?php echo $row['product_image']; ?>" />
+            <div class="star">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
             </div>
+            <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+            <!-- <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4> -->
+            <?php if ($row['product_special_offer'] > 0) { ?>
+            <h5 class="p-price"><del>$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></del></h5>
+            <h4 class="p-price">$
+                <?php echo number_format($row['product_price'] - $row['product_price'] * ($row['product_special_offer'] / 100), 2, '.', ','); ?>
+            </h4>
+            <?php } else { ?>
+            <h4 class="p-price">$ <?php echo number_format($row['product_price'], 2, '.', ','); ?></h4>
+            <?php } ?>
+            <a href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">
+                <button class="buy-btn">Mua ngay</button>
+            </a>
+        </div>
 
         <?php } ?>
 

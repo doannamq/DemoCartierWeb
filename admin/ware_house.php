@@ -1,5 +1,16 @@
 <?php
-include('../server/connection.php');
+session_start();
+?>
+
+<?php
+include('../server/connection.php')
+?>
+
+<?php
+if (!isset($_SESSION['admin_logged_in'])) {
+    header('location: login.php');
+    exit;
+}
 ?>
 
 <?php
